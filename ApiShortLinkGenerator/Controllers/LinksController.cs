@@ -2,6 +2,7 @@
 using ApiShortLinkGenerator.Models;
 using ApiShortLinkGenerator.Models.ViewModels;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using System.ComponentModel.DataAnnotations;
@@ -40,7 +41,10 @@ namespace ApiShortLinkGenerator.Controllers
                 if (Link != null && !string.IsNullOrEmpty(Link.UserLink)) {
                     Link.DateLastUsed = DateTime.Now;
                     await _context.SaveChangesAsync();
-                    return Redirect(Link.UserLink);
+                    if (Uri.TryCreate(Link.UserLink, UriKind.Absolute, out var uri))
+                    {
+                        return Redirect(UriHelper.Encode(uri));
+                    }
                 }
             }
 
