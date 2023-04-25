@@ -31,6 +31,7 @@ namespace ApiShortLinkGenerator.Controllers
             _config = configuration;
             _qrCodeGenerator = qrCodeGenerator;
         }
+        
         [Route("{token}")]
         [HttpGet]
         public async Task<ActionResult> Get(string token)
@@ -38,7 +39,8 @@ namespace ApiShortLinkGenerator.Controllers
             if (!string.IsNullOrEmpty(token)) 
             {
                 var Link = _context.Links.Where(el => el.Token == token).FirstOrDefault();
-                if (Link != null && !string.IsNullOrEmpty(Link.UserLink)) {
+                if (Link != null && !string.IsNullOrEmpty(Link.UserLink)) 
+                {
                     Link.DateLastUsed = DateTime.Now;
                     await _context.SaveChangesAsync();
                     if (Uri.TryCreate(Link.UserLink, UriKind.Absolute, out var uri))
